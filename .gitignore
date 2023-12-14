@@ -1,0 +1,5 @@
+venv/
+env/
+mariadb/
+__pycache__/
+.idea/

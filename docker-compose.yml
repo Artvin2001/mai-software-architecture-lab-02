@@ -1,0 +1,49 @@
+version: "3.8"
+
+services:
+  user_service:
+    build:
+      context: ./user_service
+      dockerfile: Dockerfile
+    ports:
+      - "8001:8000"
+    depends_on:
+      mariadb:
+        condition: service_healthy
+
+  report_service:
+    build:
+      context: ./report_service
+      dockerfile: Dockerfile
+    ports:
+      - "8002:8000"
+    depends_on:
+      mariadb:
+        condition: service_healthy
+
+  conference_service:
+    build:
+      context: ./conference_service
+      dockerfile: Dockerfile
+    ports:
+      - "8003:8000"
+    depends_on:
+      mariadb:
+        condition: service_healthy
+
+  mariadb:
+    image: mariadb:10.7
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./mariadb:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=password
+      - MYSQL_PASSWORD=password
+      - MYSQL_USER=user
+      - MYSQL_DATABASE=database
+    healthcheck:
+      test: "/usr/bin/mariadb --user=user --password=password --execute \"SHOW DATABASES;\""
+      interval: 15s
+      timeout: 1s
+      retries: 5
