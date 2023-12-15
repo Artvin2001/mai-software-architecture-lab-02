@@ -30,6 +30,6 @@ CREATE TABLE report
     user_id         INTEGER      NOT NULL,
     conference_id   INTEGER,
     PRIMARY KEY (id),
-    FOREIGN KEY (user_id) REFERENCES user (id),
-    FOREIGN KEY (conference_id) REFERENCES conference (id)
+    FOREIGN KEY (user_id) REFERENCES user (id) ON DELETE CASCADE,
+    FOREIGN KEY (conference_id) REFERENCES conference (id) ON DELETE CASCADE
 );

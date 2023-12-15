@@ -41,8 +41,8 @@ class ReportTable(Base):
     creation_date = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
     update_date = Column(DateTime(timezone=True))
     moderation_flag = Column(Boolean, default=False, nullable=False)
-    user_id = Column(Integer, ForeignKey('user.id'), nullable=False)
-    conference_id = Column(Integer, ForeignKey('conference.id'))
+    user_id = Column(Integer, ForeignKey('user.id', ondelete="CASCADE"), nullable=False)
+    conference_id = Column(Integer, ForeignKey('conference.id', ondelete="CASCADE"))
 
 
 class ConferenceTable(Base):
