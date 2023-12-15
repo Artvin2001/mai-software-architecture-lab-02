@@ -11,7 +11,7 @@ class Service:
     def create_user(self, model: CreateUserModel) -> UserModel:
         user = self.__session.query(UserTable).filter(UserTable.email == model.email).scalar()
         if user is not None:
-            HTTPException(status.HTTP_409_CONFLICT, f'User with email {model.email} already exists.')
+            raise HTTPException(status.HTTP_409_CONFLICT, f'User with email {model.email} already exists.')
         user = UserTable(
             email=model.email,
             first_name=model.first_name,
