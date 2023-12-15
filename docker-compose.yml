@@ -2,6 +2,7 @@ version: "3.8"
 
 services:
   user_service:
+    container_name: user_service
     build:
       context: ./user_service
       dockerfile: Dockerfile
@@ -12,6 +13,7 @@ services:
         condition: service_healthy
 
   report_service:
+    container_name: report_service
     build:
       context: ./report_service
       dockerfile: Dockerfile
@@ -22,6 +24,7 @@ services:
         condition: service_healthy
 
   conference_service:
+    container_name: conference_service
     build:
       context: ./conference_service
       dockerfile: Dockerfile
@@ -32,6 +35,7 @@ services:
         condition: service_healthy
 
   mariadb:
+    container_name: mariadb
     image: mariadb:10.7
     ports:
       - "3306:3306"
