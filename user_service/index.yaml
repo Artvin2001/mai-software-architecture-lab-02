@@ -1,0 +1,228 @@
+---
+openapi: 3.1.0
+info:
+  title: User Service
+  description: Сервис авторизации
+  version: 0.1.0
+paths:
+  "/users":
+    post:
+      tags:
+        - Пользователи
+      summary: Создание нового пользователя.
+      operationId: create_user_endpoint_users_post
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/CreateUserModel"
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/UserModel"
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/HTTPValidationError"
+    get:
+      tags:
+        - Пользователи
+      summary: Получение пользователя по электронной почте.
+      operationId: get_user_by_email_endpoint_users_get
+      parameters:
+        - name: email
+          in: query
+          required: true
+          schema:
+            type: string
+            title: Email
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/UserModel"
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/HTTPValidationError"
+  "/users/{user_id}":
+    get:
+      tags:
+        - Пользователи
+      summary: Получение пользователя по идентификатору.
+      operationId: get_user_by_id_endpoint_users__user_id__get
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          schema:
+            type: integer
+            title: User Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/UserModel"
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/HTTPValidationError"
+    put:
+      tags:
+        - Пользователи
+      summary: Редактирование пользователя.
+      operationId: update_user_endpoint_users__user_id__put
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          schema:
+            type: integer
+            title: User Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/CreateUserModel"
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/UserModel"
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/HTTPValidationError"
+    delete:
+      tags:
+        - Пользователи
+      summary: Удаление пользователя.
+      operationId: delete_user_by_id_endpoint_users__user_id__delete
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          schema:
+            type: integer
+            title: User Id
+      responses:
+        '204':
+          description: Successful Response
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/HTTPValidationError"
+components:
+  schemas:
+    AccessRights:
+      type: string
+      enum:
+        - ADMIN
+        - USER
+        - MODERATOR
+      title: AccessRights
+    CreateUserModel:
+      properties:
+        email:
+          type: string
+          title: Email
+        first_name:
+          type: string
+          title: First Name
+        last_name:
+          type: string
+          title: Last Name
+        patronymic:
+          type: string
+          title: Patronymic
+        access_rights:
+          "$ref": "#/components/schemas/AccessRights"
+      type: object
+      required:
+        - email
+        - first_name
+        - last_name
+        - patronymic
+        - access_rights
+      title: CreateUserModel
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            "$ref": "#/components/schemas/ValidationError"
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    UserModel:
+      properties:
+        id:
+          type: integer
+          title: Id
+        email:
+          type: string
+          title: Email
+        first_name:
+          type: string
+          title: First Name
+        last_name:
+          type: string
+          title: Last Name
+        patronymic:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Patronymic
+        access_rights:
+          "$ref": "#/components/schemas/AccessRights"
+      type: object
+      required:
+        - id
+        - email
+        - first_name
+        - last_name
+        - patronymic
+        - access_rights
+      title: UserModel
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+              - type: string
+              - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+        - loc
+        - msg
+        - type
+      title: ValidationError

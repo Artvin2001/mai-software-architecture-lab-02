@@ -1,0 +1,247 @@
+---
+openapi: 3.1.0
+info:
+  title: Report Service
+  description: Сервис докладов
+  version: 0.1.0
+paths:
+  "/reports":
+    post:
+      tags:
+        - Доклады
+      summary: Создание доклада.
+      operationId: create_report_endpoint_reports_post
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/CreateReportModel"
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ReportModel"
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/HTTPValidationError"
+    get:
+      tags:
+        - Доклады
+      summary: Получение доклада по маске названия (поиск по регулярному выражению).
+      operationId: get_report_by_id_endpoint_reports_get
+      parameters:
+        - name: report_title_regex
+          in: query
+          required: true
+          schema:
+            type: string
+            title: Report Title Regex
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/ReportModel"
+                title: Response Get Report By Id Endpoint Reports Get
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/HTTPValidationError"
+  "/reports/{report_id}":
+    get:
+      tags:
+        - Доклады
+      summary: Получение доклада по идентификатору.
+      operationId: get_report_by_id_endpoint_reports__report_id__get
+      parameters:
+        - name: report_id
+          in: path
+          required: true
+          schema:
+            type: integer
+            title: Report Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ReportModel"
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/HTTPValidationError"
+    put:
+      tags:
+        - Доклады
+      summary: Редактирование доклада.
+      operationId: update_report_endpoint_reports__report_id__put
+      parameters:
+        - name: report_id
+          in: path
+          required: true
+          schema:
+            type: integer
+            title: Report Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/CreateReportModel"
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ReportModel"
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/HTTPValidationError"
+    delete:
+      tags:
+        - Доклады
+      summary: Удаление доклада.
+      operationId: delete_report_by_id_endpoint_reports__report_id__delete
+      parameters:
+        - name: report_id
+          in: path
+          required: true
+          schema:
+            type: integer
+            title: Report Id
+      responses:
+        '204':
+          description: Successful Response
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/HTTPValidationError"
+components:
+  schemas:
+    CreateReportModel:
+      properties:
+        title:
+          type: string
+          title: Title
+        annotation:
+          type: string
+          title: Annotation
+        text:
+          type: string
+          title: Text
+        moderation_flag:
+          type: boolean
+          title: Moderation Flag
+        user_id:
+          type: integer
+          title: User Id
+        conference_id:
+          anyOf:
+            - type: integer
+            - type: 'null'
+          title: Conference Id
+      type: object
+      required:
+        - title
+        - annotation
+        - text
+        - moderation_flag
+        - user_id
+      title: CreateReportModel
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            "$ref": "#/components/schemas/ValidationError"
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    ReportModel:
+      properties:
+        id:
+          type: integer
+          title: Id
+        title:
+          type: string
+          title: Title
+        annotation:
+          type: string
+          title: Annotation
+        text:
+          type: string
+          title: Text
+        creation_date:
+          type: string
+          format: date-time
+          title: Creation Date
+        update_date:
+          anyOf:
+            - type: string
+              format: date-time
+            - type: 'null'
+          title: Update Date
+        moderation_flag:
+          type: boolean
+          title: Moderation Flag
+        user_id:
+          type: integer
+          title: User Id
+        conference_id:
+          anyOf:
+            - type: integer
+            - type: 'null'
+          title: Conference Id
+      type: object
+      required:
+        - id
+        - title
+        - annotation
+        - text
+        - creation_date
+        - update_date
+        - moderation_flag
+        - user_id
+        - conference_id
+      title: ReportModel
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+              - type: string
+              - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+        - loc
+        - msg
+        - type
+      title: ValidationError

@@ -1,0 +1,189 @@
+---
+openapi: 3.1.0
+info:
+  title: Conference Service
+  description: Сервис конференций
+  version: 0.1.0
+paths:
+  "/conferences":
+    get:
+      tags:
+        - Конференции
+      summary: Получение всех конференций.
+      operationId: get_all_conferences_endpoint_conferences_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                items:
+                  "$ref": "#/components/schemas/ConferenceModel"
+                type: array
+                title: Response Get All Conferences Endpoint Conferences Get
+    post:
+      tags:
+        - Конференции
+      summary: Создание конференции.
+      operationId: create_conference_endpoint_conferences_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/CreateConferenceModel"
+        required: true
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ConferenceModel"
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/HTTPValidationError"
+  "/conferences/{conference_id}":
+    get:
+      tags:
+        - Конференции
+      summary: Получение конференции по идентификатору.
+      operationId: get_conference_by_id_endpoint_conferences__conference_id__get
+      parameters:
+        - name: conference_id
+          in: path
+          required: true
+          schema:
+            type: integer
+            title: Conference Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ConferenceModel"
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/HTTPValidationError"
+    put:
+      tags:
+        - Конференции
+      summary: Редактирование конференции.
+      operationId: update_conference_endpoint_conferences__conference_id__put
+      parameters:
+        - name: conference_id
+          in: path
+          required: true
+          schema:
+            type: integer
+            title: Conference Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/CreateConferenceModel"
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ConferenceModel"
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/HTTPValidationError"
+    delete:
+      tags:
+        - Конференции
+      summary: Удаление конференции.
+      operationId: delete_conference_by_id_endpoint_conferences__conference_id__delete
+      parameters:
+        - name: conference_id
+          in: path
+          required: true
+          schema:
+            type: integer
+            title: Conference Id
+      responses:
+        '204':
+          description: Successful Response
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/HTTPValidationError"
+components:
+  schemas:
+    ConferenceModel:
+      properties:
+        id:
+          type: integer
+          title: Id
+        title:
+          type: string
+          title: Title
+        date:
+          type: string
+          format: date-time
+          title: Date
+      type: object
+      required:
+        - id
+        - title
+        - date
+      title: ConferenceModel
+    CreateConferenceModel:
+      properties:
+        title:
+          type: string
+          title: Title
+        date:
+          type: string
+          format: date-time
+          title: Date
+      type: object
+      required:
+        - title
+        - date
+      title: CreateConferenceModel
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            "$ref": "#/components/schemas/ValidationError"
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+              - type: string
+              - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+        - loc
+        - msg
+        - type
+      title: ValidationError
