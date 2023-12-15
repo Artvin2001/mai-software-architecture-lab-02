@@ -1,10 +1,10 @@
-from fastapi import APIRouter, Depends, status, Response
+from fastapi import APIRouter, Depends, Response, status
 
 from models import CreateUserModel, UserModel
 from service import Service
 
 router = APIRouter(
-    prefix='/user',
+    prefix='/users',
     tags=['Пользователи'],
 )
 

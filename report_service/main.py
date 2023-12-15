@@ -3,11 +3,15 @@ from argparse import ArgumentParser
 import uvicorn
 from fastapi import FastAPI
 
+from api import router
+
 app = FastAPI(
     title='Report Service',
     description='Сервис докладов',
     docs_url='/',
 )
+
+app.include_router(router)
 
 if __name__ == '__main__':
     parser = ArgumentParser()

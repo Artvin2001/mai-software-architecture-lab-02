@@ -14,7 +14,7 @@ class UserModel(BaseModel):
     email: str
     first_name: str
     last_name: str
-    patronymic: str
+    patronymic: str | None
     access_rights: AccessRights
 
     model_config = ConfigDict(from_attributes=True)

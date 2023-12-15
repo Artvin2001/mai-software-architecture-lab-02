@@ -51,8 +51,3 @@ class ConferenceTable(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     title = Column(String(128), nullable=False)
     date = Column(DateTime(timezone=True), nullable=False)
-
-
-if __name__ == '__main__':
-    engine_localhost = create_engine("mysql+pymysql://user:password@localhost/database?charset=utf8mb4", echo=True)
-    Base.metadata.create_all(bind=engine_localhost)
