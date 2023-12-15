@@ -29,7 +29,15 @@ def get_report_by_id_endpoint(report_id: int, service: Service = Depends()) -> R
     return service.get_report_by_id(report_id)
 
 
-# ВСТАВИТЬ ЕЩЕ ОДИН
+@router.get(
+    "",
+    status_code=status.HTTP_200_OK,
+    response_model=list[ReportModel],
+    summary="Получение доклада по маске названия (поиск по регулярному выражению).",
+)
+def get_report_by_id_endpoint(report_title_regex: str, service: Service = Depends()) -> list[ReportModel]:
+    return service.get_report_by_title_regex(report_title_regex)
+
 
 @router.put(
     "/{report_id}",

@@ -23,7 +23,7 @@ class Service:
         self.__session.commit()
         return user
 
-    def get_user_by_id(self, user_id: int) -> UserTable:
+    def get_user_by_id(self, user_id: int) -> UserModel:
         user = self.__session.query(UserTable).get(user_id)
         if user is None:
             raise HTTPException(status.HTTP_404_NOT_FOUND, f'User with id {user_id} not found.')
