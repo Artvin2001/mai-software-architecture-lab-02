@@ -1,4 +1,5 @@
 from enum import Enum
+from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict
 
@@ -10,7 +11,7 @@ class AccessRights(str, Enum):
 
 
 class UserModel(BaseModel):
-    id: int
+    uuid: UUID
     email: str
     first_name: str
     last_name: str

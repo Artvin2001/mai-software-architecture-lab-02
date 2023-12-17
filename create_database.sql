@@ -1,12 +1,12 @@
 CREATE TABLE user
 (
-    id            INTEGER                           NOT NULL AUTO_INCREMENT,
+    uuid          UUID                              NOT NULL,
     email         VARCHAR(64)                       NOT NULL,
     first_name    VARCHAR(64)                       NOT NULL,
     last_name     VARCHAR(64)                       NOT NULL,
     patronymic    VARCHAR(64),
     access_rights ENUM ('ADMIN','USER','MODERATOR') NOT NULL,
-    PRIMARY KEY (id),
+    PRIMARY KEY (uuid),
     UNIQUE (email)
 );
 
@@ -27,9 +27,9 @@ CREATE TABLE report
     creation_date   DATETIME     NOT NULL DEFAULT now(),
     update_date     DATETIME,
     moderation_flag BOOL         NOT NULL,
-    user_id         INTEGER      NOT NULL,
+    user_id         UUID         NOT NULL,
     conference_id   INTEGER,
     PRIMARY KEY (id),
-    FOREIGN KEY (user_id) REFERENCES user (id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES user (uuid) ON DELETE CASCADE,
     FOREIGN KEY (conference_id) REFERENCES conference (id) ON DELETE CASCADE
 );

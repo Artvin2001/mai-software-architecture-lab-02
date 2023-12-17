@@ -1,4 +1,4 @@
-from sqlalchemy import Boolean, Column, DateTime, Enum, ForeignKey, Integer, String, Text, create_engine, func
+from sqlalchemy import Boolean, Column, DateTime, Enum, ForeignKey, Integer, String, Text, UUID, create_engine, func
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
@@ -23,7 +23,7 @@ Base = declarative_base()
 class UserTable(Base):
     __tablename__ = 'user'
 
-    id = Column(Integer, primary_key=True, autoincrement=True)
+    uuid = Column(UUID, primary_key=True)
     email = Column(String(64), nullable=False, unique=True)
     first_name = Column(String(64), nullable=False)
     last_name = Column(String(64), nullable=False)
@@ -41,7 +41,7 @@ class ReportTable(Base):
     creation_date = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
     update_date = Column(DateTime(timezone=True))
     moderation_flag = Column(Boolean, default=False, nullable=False)
-    user_id = Column(Integer, ForeignKey('user.id', ondelete="CASCADE"), nullable=False)
+    user_id = Column(UUID, ForeignKey('user.uuid', ondelete="CASCADE"), nullable=False)
     conference_id = Column(Integer, ForeignKey('conference.id', ondelete="CASCADE"))
 
 

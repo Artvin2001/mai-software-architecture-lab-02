@@ -1,3 +1,5 @@
+from uuid import UUID
+
 from fastapi import APIRouter, Depends, Response, status
 
 from models import CreateUserModel, UserModel
@@ -20,13 +22,13 @@ def create_user_endpoint(model: CreateUserModel, service: Service = Depends()) -
 
 
 @router.get(
-    "/{user_id}",
+    "/{user_uuid}",
     status_code=status.HTTP_200_OK,
     response_model=UserModel,
     summary="Получение пользователя по идентификатору.",
 )
-def get_user_by_id_endpoint(user_id: int, service: Service = Depends()) -> UserModel:
-    return service.get_user_by_id(user_id)
+def get_user_by_id_endpoint(user_uuid: UUID, service: Service = Depends()) -> UserModel:
+    return service.get_user_by_uuid(user_uuid)
 
 
 @router.get(
@@ -40,20 +42,20 @@ def get_user_by_email_endpoint(email: str, service: Service = Depends()) -> User
 
 
 @router.put(
-    "/{user_id}",
+    "/{user_uuid}",
     status_code=status.HTTP_200_OK,
     response_model=UserModel,
     summary="Редактирование пользователя.",
 )
-def update_user_endpoint(user_id: int, model: CreateUserModel, service: Service = Depends()) -> UserModel:
-    return service.update_user(user_id, model)
+def update_user_endpoint(user_uuid: UUID, model: CreateUserModel, service: Service = Depends()) -> UserModel:
+    return service.update_user(user_uuid, model)
 
 
 @router.delete(
-    "/{user_id}",
+    "/{user_uuid}",
     status_code=status.HTTP_204_NO_CONTENT,
     response_class=Response,
     summary="Удаление пользователя.",
 )
-def delete_user_by_id_endpoint(user_id: int, service: Service = Depends()) -> None:
-    return service.delete_user(user_id)
+def delete_user_by_uuid_endpoint(user_uuid: UUID, service: Service = Depends()) -> None:
+    return service.delete_user(user_uuid)
