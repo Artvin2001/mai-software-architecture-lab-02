@@ -1,5 +1,6 @@
 from datetime import datetime
 from enum import Enum
+from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict
 
@@ -18,7 +19,7 @@ class ReportModel(BaseModel):
     creation_date: datetime
     update_date: datetime | None
     moderation_flag: bool
-    user_id: int
+    user_uuid: UUID
     conference_id: int | None
 
     model_config = ConfigDict(from_attributes=True)
@@ -29,7 +30,7 @@ class CreateReportModel(BaseModel):
     annotation: str
     text: str
     moderation_flag: bool
-    user_id: int
+    user_uuid: UUID
     conference_id: int | None = None
 
     model_config = ConfigDict(from_attributes=True)

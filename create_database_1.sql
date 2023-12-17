@@ -1,3 +1,5 @@
+-- Создание схемы базы данных для первой ноды
+
 CREATE TABLE user
 (
     uuid          UUID                              NOT NULL,

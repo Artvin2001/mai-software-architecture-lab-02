@@ -1,10 +1,10 @@
-from sqlalchemy import Boolean, Column, DateTime, Enum, ForeignKey, Integer, String, Text, UUID, create_engine, func
+from sqlalchemy import Boolean, Column, DateTime, Enum, Integer, String, Text, UUID, create_engine, func
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
 from models import AccessRights
 
-engine = create_engine("mysql+pymysql://user:password@mariadb/database?charset=utf8mb4")
+engine = create_engine("mysql+pymysql://user:password@mariadb-node1/database?charset=utf8mb4")
 
 Session = sessionmaker(bind=engine)
 
@@ -41,8 +41,8 @@ class ReportTable(Base):
     creation_date = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
     update_date = Column(DateTime(timezone=True))
     moderation_flag = Column(Boolean, default=False, nullable=False)
-    user_id = Column(UUID, ForeignKey('user.uuid', ondelete="CASCADE"), nullable=False)
-    conference_id = Column(Integer, ForeignKey('conference.id', ondelete="CASCADE"))
+    user_uuid = Column(UUID, nullable=False)
+    conference_id = Column(Integer)
 
 
 class ConferenceTable(Base):
