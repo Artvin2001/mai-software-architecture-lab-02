@@ -1,6 +1,8 @@
+import json
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, Response, status
+from fastapi.requests import Request
 
 from models import CreateUserModel, UserModel
 from service import Service
@@ -10,6 +12,8 @@ router = APIRouter(
     tags=['Пользователи'],
 )
 
+TTL = 60
+
 
 @router.post(
     "",
@@ -17,8 +21,14 @@ router = APIRouter(
     response_model=UserModel,
     summary="Создание нового пользователя.",
 )
-def create_user_endpoint(model: CreateUserModel, service: Service = Depends()) -> UserModel:
-    return service.create_user(model)
+def create_user_endpoint(
+        request: Request,
+        model: CreateUserModel,
+        service: Service = Depends(),
+) -> UserModel:
+    data = service.create_user(model)
+    request.app.state.redis.setex(str(data.uuid), TTL, UserModel(**data.__dict__).model_dump_json())
+    return data
 
 
 @router.get(
@@ -27,8 +37,14 @@ def create_user_endpoint(model: CreateUserModel, service: Service = Depends()) -
     response_model=UserModel,
     summary="Получение пользователя по идентификатору.",
 )
-def get_user_by_id_endpoint(user_uuid: UUID, service: Service = Depends()) -> UserModel:
-    return service.get_user_by_uuid(user_uuid)
+def get_user_by_id_endpoint(request: Request, user_uuid: UUID, service: Service = Depends()) -> UserModel:
+    cached = request.app.state.redis.get(str(user_uuid))
+    if cached:
+        return UserModel.model_validate(json.loads(cached.decode("utf8")))
+
+    data = service.get_user_by_uuid(user_uuid)
+    request.app.state.redis.setex(str(user_uuid), TTL, UserModel(**data.__dict__).model_dump_json())
+    return data
 
 
 @router.get(
@@ -47,8 +63,19 @@ def get_user_by_email_endpoint(email: str, service: Service = Depends()) -> User
     response_model=UserModel,
     summary="Редактирование пользователя.",
 )
-def update_user_endpoint(user_uuid: UUID, model: CreateUserModel, service: Service = Depends()) -> UserModel:
-    return service.update_user(user_uuid, model)
+def update_user_endpoint(
+        request: Request,
+        user_uuid: UUID,
+        model: CreateUserModel,
+        service: Service = Depends(),
+) -> UserModel:
+    data = service.update_user(user_uuid, model)
+    request.app.state.redis.setex(
+        str(user_uuid),
+        TTL,
+        UserModel(**model.model_dump(), uuid=user_uuid).model_dump_json(),
+    )
+    return data
 
 
 @router.delete(
@@ -57,5 +84,11 @@ def update_user_endpoint(user_uuid: UUID, model: CreateUserModel, service: Servi
     response_class=Response,
     summary="Удаление пользователя.",
 )
-def delete_user_by_uuid_endpoint(user_uuid: UUID, service: Service = Depends()) -> None:
-    return service.delete_user(user_uuid)
+def delete_user_by_uuid_endpoint(
+        request: Request,
+        user_uuid: UUID,
+        service: Service = Depends(),
+) -> None:
+    service.delete_user(user_uuid)
+    request.app.state.redis.delete(str(user_uuid))
+

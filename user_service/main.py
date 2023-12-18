@@ -2,6 +2,7 @@ from argparse import ArgumentParser
 
 import uvicorn
 from fastapi import FastAPI
+from redis import Redis
 
 from api import router
 
@@ -12,6 +13,12 @@ app = FastAPI(
 )
 
 app.include_router(router)
+
+
+@app.on_event('startup')
+async def startup():
+    app.state.redis = Redis(host='redis', port=6379, db=0)
+
 
 if __name__ == '__main__':
     parser = ArgumentParser()

@@ -51,11 +51,8 @@ class Service:
     def update_user(self, user_uuid: UUID, model: CreateUserModel) -> UserModel:
         user = self.get_user_by_uuid(user_uuid)
 
-        if self.get_user_by_email(model.email) is not None:
-            raise HTTPException(
-                status.HTTP_422_UNPROCESSABLE_ENTITY,
-                f'User with email {model.email} already exists.',
-            )
+        if user.email != model.email:
+            raise HTTPException(status.HTTP_422_UNPROCESSABLE_ENTITY, f'Could not change email.')
 
         user.email = model.email
         user.first_name = model.first_name
